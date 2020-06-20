@@ -2,8 +2,8 @@
 -- set es_enableCustomData 1
 
 AddEventHandler('es_db:doesUserExist', function(identifier, callback)
-	MySQL.Async.fetchAll('SELECT 1 FROM users WHERE `identifier`=@identifier;', {identifier = identifier}, function(users)
-		if users[1] then
+	MySQL.Async.fetchScalar('SELECT COUNT(1) FROM users WHERE identifier = @identifier', { ['@identifier'] = identifier }, function(users)
+		if users > 0 then
 			callback(true)
 		else
 			callback(false)
@@ -56,8 +56,8 @@ AddEventHandler('es_db:retrieveLicensedUser', function(license, callback)
 end)
 
 AddEventHandler('es_db:doesLicensedUserExist', function(license, callback)
-	MySQL.Async.fetchAll('SELECT 1 FROM users WHERE `license`=@license;', {license = license}, function(users)
-		if users[1] then
+	MySQL.Async.fetchScalar('SELECT COUNT(1) FROM users WHERE license = @license', { ['@license'] = license }, function(users)
+		if users > 0 then
 			callback(true)
 		else
 			callback(false)
@@ -67,7 +67,7 @@ end)
 
 AddEventHandler('es_db:updateUser', function(identifier, new, callback)
 	Citizen.CreateThread(function()
-		if(#new ~= 0)then
+		--if(#new ~= 0)then
 			local updateString = ''
 			local params = {identifier = identifier}
 
@@ -89,7 +89,7 @@ AddEventHandler('es_db:updateUser', function(identifier, new, callback)
 					callback(true)
 				end
 			end)
-		end
+		--end
 	end)
 end)
 
