@@ -56,8 +56,8 @@ AddEventHandler('es_db:retrieveLicensedUser', function(license, callback)
 end)
 
 AddEventHandler('es_db:doesLicensedUserExist', function(license, callback)
-	MySQL.Async.fetchAll('SELECT 1 FROM users WHERE `license`=@license;', {license = license}, function(users)
-		if users[1] then
+	MySQL.Async.fetchScalar('SELECT COUNT(1) FROM users WHERE license = @license', { ['@license'] = license }, function(users)
+		if users > 0 then
 			callback(true)
 		else
 			callback(false)
