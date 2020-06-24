@@ -12,12 +12,11 @@ AddEventHandler('es_db:doesUserExist', function(identifier, callback)
 end)
 
 AddEventHandler('es_db:retrieveUser', function(identifier, callback)
-	local Callback = callback
-	MySQL.Async.fetchAll('SELECT * FROM users WHERE `identifier`=@identifier;', {identifier = identifier}, function(users)
+	MySQL.Async.fetchAll('SELECT `identifier`, `license`, `money`, `bank`, `group`, `permission_level` FROM users WHERE identifier = @identifier', { ['@identifier'] = identifier }, function(users)
 		if users[1] then
-			Callback(users[1])
+			callback(users[1])
 		else
-			Callback(false)
+			callback(false)
 		end
 	end)
 end)
@@ -46,7 +45,7 @@ AddEventHandler('es_db:createUser', function(identifier, license, cash, bank, ca
 end)
 
 AddEventHandler('es_db:retrieveLicensedUser', function(license, callback)
-	MySQL.Async.fetchAll('SELECT * FROM users WHERE `license`=@license;', {license = license}, function(users)
+	MySQL.Async.fetchAll('SELECT `identifier`, `license`, `money`, `bank`, `group`, `permission_level` FROM users WHERE license = @license', { ['@license'] = license }, function(users)
 		if users[1] then
 			callback(users[1])
 		else
